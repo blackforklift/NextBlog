@@ -25,7 +25,13 @@ const WritePage = () => {
   const [value, setValue] = useState("");
   const [title, setTitle] = useState("");
   const [catSlug, setCatSlug] = useState("");
-
+  useEffect(() => {
+    // Dynamically import Quill and its styles only on the client side
+    import("react-quill").then((Quill) => {
+      import("react-quill/dist/quill.bubble.css");
+      // Now Quill is available for use in the browser environment
+    });
+  }, []);
   useEffect(() => {
     const storage = getStorage(app);
     const upload = () => {
@@ -107,14 +113,14 @@ const WritePage = () => {
         className={styles.input}
         onChange={(e) => setTitle(e.target.value)}
       />
-      <select className={styles.select} onChange={(e) => setCatSlug(e.target.value)}>
-   
-        <option value="fashion">fashion</option>
-        <option value="food">food</option>
-        <option value="culture">culture</option>
-        <option value="travel">travel</option>
-        <option value="coding">coding</option>
-      </select>
+     
+            <input
+        type="text"
+        className={styles.select}
+        onChange={(e) => setCatSlug(e.target.value)}
+        placeholder="Enter category"
+      />
+
       <div className={styles.editor}>
         <button className={styles.button} onClick={() => setOpen(!open)}>
           <Image src="/plus.png" alt="" width={16} height={16} />
@@ -154,5 +160,10 @@ const WritePage = () => {
     </div>
   );
 };
+
+// TODO:
+//  1- kullanıcı istediği kategoriyi girebilsin
+//  2 - kullanıcı kod bloğu ekleyebilsin
+
 
 export default WritePage;

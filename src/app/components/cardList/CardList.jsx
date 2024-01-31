@@ -3,6 +3,7 @@ import styles from "./cardList.module.css";
 import Pagination from "../pagination/Pagination";
 import Image from "next/image";
 import Card from "../card/Card";
+import MenuPosts from "../menuPosts/MenuPosts";
 
 
 const getData = async (page, cat) => {
@@ -23,6 +24,7 @@ const getData = async (page, cat) => {
 const CardList = async ({ page, cat }) => {
   const { posts, count } = await getData(page, cat);
 
+
   const POST_PER_PAGE = 2;
 
   const hasPrev = POST_PER_PAGE * (page - 1) > 0;
@@ -36,7 +38,9 @@ const CardList = async ({ page, cat }) => {
           <Card key={item._id} item={item}  />
         ))}
       </div>
+  
       <Pagination page={page} hasPrev={hasPrev} hasNext={hasNext} />
+    
     </div>
   );
 };

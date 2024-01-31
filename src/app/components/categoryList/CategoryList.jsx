@@ -16,15 +16,18 @@ const getData = async () => {
 };
 
 const CategoryList = async () => {
-  const data = await getData();
+  const { popCategories }= await getData();
+
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Popular Categories</h1>
       <div className={styles.categories}>
-        {data?.map((item) => (
+        {popCategories?.map((item) => (
           <Link
             href={`/blog?cat=${item.slug}`}
             className={`${styles.category} ${styles[item.slug]}`}
+            style={item.color && { backgroundColor: item.color }}
             key={item._id}
           >
             {item.img && (

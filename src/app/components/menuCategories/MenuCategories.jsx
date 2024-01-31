@@ -16,14 +16,15 @@ const getData = async () => {
   return res.json();
 };
 const MenuCategories = async () => {
-  const data = await getData();
+  const {categories} = await getData();
   return (
     <div className={styles.container}>
       <div className={styles.categoryList}>
-        {data?.map((item) => (
+        {categories?.map((item) => (
           <Link
             href={`/blog?cat=${item.slug}`}
-            className={`${styles.categoryItem} ${styles[item.slug]}`}
+            className={`${styles.categoryItem}`}
+            style={item.color && { backgroundColor: item.color }}
             key={item._id}
           >
            

@@ -13,8 +13,11 @@
     flex-direction: column;
     gap: 14px;
   }
-  
+  .img {
+    border-radius: 50%;
+  }
   .logo {
+
     display: flex;
     align-items: center;
     gap: 10px;

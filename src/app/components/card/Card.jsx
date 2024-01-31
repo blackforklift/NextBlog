@@ -1,10 +1,38 @@
+"use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import styles from "./card.module.css";
 import Link from "next/link";
 
-const Card = ({ key, item }) => {
+
+const Card = ({ item }) => {
+  const { status } = useSession();
+  const router = useRouter();
+
+  const handledelete = async () => {
+    try {
+      const res = await fetch(`/api/posts?id=${item.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
+      if (res.status === 200) {
+        const data = await res.json();
+        console.log("successfully deleted", data);
+        router.push("/");
+  
+        
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
-    <div className={styles.container} key={key}>
+    <div className={styles.container}>
       {item.img && (
         <div className={styles.imageContainer}>
           <Image src={item.img} alt="" fill className={styles.image} />
@@ -17,14 +45,27 @@ const Card = ({ key, item }) => {
           </span>
           <span className={styles.category}>{item.catSlug}</span>
         </div>
-        <Link href={`/posts/${item.slug}`}>
-          <h1>{item.title}</h1>
-        </Link>
-        {/* <p className={styles.desc}>{item.desc.substring(0, 60)}</p> */}
-        <div className={styles.desc} dangerouslySetInnerHTML={{ __html: item?.desc.substring(0,140) +"..."}}/>
+        <div className={styles.titlecontainer}>
+          <Link href={`/posts/${item.slug}`}>
+            <h1>{item.title}</h1>
+          </Link>
+          {status === "authenticated" ?
+            (<button className={styles.m} onClick={handledelete}> -</button>):("")   //eğer yazar ise buton görünsün şeklinde editle
+
+          }
+       
+          
+        </div>
+        <div
+          className={styles.desc}
+          dangerouslySetInnerHTML={{
+            __html: item?.desc.substring(0, 140) + "...",
+          }}
+        />
         <Link href={`/posts/${item.slug}`} className={styles.link}>
           Read More
         </Link>
+        <br />
       </div>
     </div>
   );

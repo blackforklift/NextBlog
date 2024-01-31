@@ -62,6 +62,8 @@ model Category {
   slug  String  @unique
   title String
   img   String?
+  color String?
+  views  Int     @default(0)
   Posts Post[]
 }
 
@@ -74,10 +76,12 @@ model Post {
   img       String?
   views     Int       @default(0)
   catSlug   String
-  cat       Category  @relation(fields: [catSlug], references: [slug])
+
+  cat       Category?  @relation(fields: [catSlug], references: [slug])
   userEmail String
   user      User      @relation(fields: [userEmail], references: [email])
   comments  Comment[]
+  catViews  Int       @map("_catViews") @default(0)
 }
 
 model Comment {

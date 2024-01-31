@@ -1,24 +1,46 @@
+
+/* OUT */
+
 .infoContainer {
-    display: flex;
-    align-items: center;
+   padding-top: 5%;
+   align-items: center;
     gap: 50px;
   }
   
   .textContainer {
-    flex: 1;
+  align-content: center;
+  justify-content: space-between;
+    display: flex;
+    margin-bottom: 25px;
+    gap: 5%;
   }
   
   .title {
     font-size: 64px;
-    margin-bottom: 50px;
+
   }
   
-  .user {
+  /*USER */
+
+  .username {
+
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  .user{
+ 
+    gap: 10px;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-    gap: 20px;
+    color: var(--softTextColor);
   }
-  
+
+  .date{
+    font-size: 12px;
+  }
+
   .userImageContainer {
     width: 50px;
     height: 50px;
@@ -26,32 +48,34 @@
   }
   
   .avatar {
+    flex-direction: row-reverse;
+    width: 80%;
+    height: auto;
     border-radius: 50%;
     object-fit: cover;
   }
   
-  .userTextContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    color: var(--softTextColor);
-  }
   
-  .username {
-    font-size: 20px;
-    font-weight: 500;
-  }
   
+
   .imageContainer {
-    flex: 1;
-    height: 350px;
+
+    height: 400px;
+
     position: relative;
+    object-fit: cover;
+
+;
   }
   
   .image {
-    object-fit: cover;
+
+    width: 100%;
+   height: auto;
+    
   }
   
+  /* CONTENT */
   .content {
     display: flex;
     gap: 50px;
@@ -70,23 +94,24 @@
   
   @media screen and (max-width: 1536px) {
     .title {
-      font-size: 54px;
+      font-size: 48px;
     }
   }
   @media screen and (max-width: 1280px) {
     .title {
-      font-size: 48px;
+      font-size: 38px;
     }
   }
   @media screen and (max-width: 1024px) {
-    .imageContainer {
-      display: none;
-    }
+
   }
   @media screen and (max-width: 640px) {
     .title {
-      font-size: 36px;
+      font-size: 30px;
     }
+.date{
+  display: none;
+}
   
     .description p{
       font-size: 18px;

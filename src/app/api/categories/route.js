@@ -1,13 +1,26 @@
-import prisma from "@/app/utils/connect";
+
+import prisma from "../../utils/connect";
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
-  try {
-    const categories = await prisma.category.findMany();
+export const GET = async (req, { params }) => {
 
-    return new NextResponse(JSON.stringify(categories, { status: 200 }));
+  const popQuery = {
+    take: 3,
+    orderBy: { views: 'desc' },
+  };
+ 
+  try {
+   
+    const [categories,popCategories] = await prisma.$transaction([
+      prisma.category.findMany(),
+      prisma.category.findMany(popQuery)
+
+    ])
+  
+    return new NextResponse(JSON.stringify({categories,popCategories}, { status: 200 }));
+   
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return new NextResponse(
       JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
     );
