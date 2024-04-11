@@ -55,7 +55,7 @@ export const DELETE = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
     const postid = searchParams.get("id");
-   console.log("post id: ",postid)
+    const { user } = req.session; // Assuming user information is passed in the session
 
     if (!postid) {
       return new NextResponse(
@@ -63,19 +63,37 @@ export const DELETE = async (req) => {
       );
     }
 
+    const post = await prisma.post.findUnique({
+      where: { id: postid },
+      select: { userEmail: true },
+    });
+
+    if (!post) {
+      return new NextResponse(
+        JSON.stringify({ message: "Post not found!" }, { status: 404 })
+      );
+    }
+
+    // Check if the user is the author of the post
+    if (post.userEmail !== user.email) {
+      return new NextResponse(
+        JSON.stringify({ message: "Unauthorized to delete this post!" }, { status: 403 })
+      );
+    }
+
     const deletedPost = await prisma.post.delete({
-      where: { id:postid },
+      where: { id: postid },
     });
 
     return new NextResponse(JSON.stringify(deletedPost, { status: 200 }));
   } catch (err) {
     console.log(err);
     return new NextResponse(
-
       JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
     );
   }
 };
+
 
 // CREATE A POST
 export const POST = async (req) => {
@@ -90,6 +108,8 @@ export const POST = async (req) => {
   try {
     const body = await req.json();
     const { catSlug } = body;
+
+    console.log("body data : ",body)
 
     // Check if the specified category exists
     let category = await prisma.category.findUnique({
@@ -120,7 +140,7 @@ export const POST = async (req) => {
   } catch (err) {
     console.log(err);
     return new NextResponse(
-      JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
+      JSON.stringify({ message: "Something went wrong in routing!",err }, { status: 500 })
     );
   }
 };

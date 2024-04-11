@@ -7,8 +7,10 @@ import Link from "next/link";
 
 
 const Card = ({ item }) => {
-  const { status } = useSession();
+  const { data: session, status } = useSession()
   const router = useRouter();
+  
+
 
   const handledelete = async () => {
     try {
@@ -49,10 +51,10 @@ const Card = ({ item }) => {
           <Link href={`/posts/${item.slug}`}>
             <h1>{item.title}</h1>
           </Link>
-          {status === "authenticated" ?
-            (<button className={styles.m} onClick={handledelete}> -</button>):("")   //eğer yazar ise buton görünsün şeklinde editle
+          {status === "authenticated" && session.user.email === item.userEmail &&
+  (<button className={styles.deleteButton} onClick={handledelete}>Delete</button>)
+}
 
-          }
        
           
         </div>

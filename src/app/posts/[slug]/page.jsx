@@ -1,6 +1,7 @@
 import Menu from "../../components/menu/Menu";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 import Comments from "../../components/comments/Comments";
 
 const getData = async (slug) => {
@@ -17,8 +18,10 @@ const getData = async (slug) => {
 
 const SinglePage = async ({ params }) => {
   const { slug } = params;
+  
 
   const data = await getData(slug);
+  console.log("data:",data)
 
   return (
     <div className={styles.container}>
@@ -26,35 +29,31 @@ const SinglePage = async ({ params }) => {
         <div className={styles.textContainer}>
           <h1 className={styles.title}>{data?.title}</h1>
           <div className={styles.user}>
-                   
-            {data?.user?.image && (
+            {data?.userEmail?.image && (
               <div className={styles.userImageContainer}>
-                <Image  src={data.user.image} alt="" layout="fill" className={styles.avatar} />
+                <Image src={data.user.image} alt="" layout="fill" className={styles.avatar} />
               </div>
             )}
-              <span   className={styles.username}>{data?.user.name}</span>
-              <span  className={styles.date}>{data.createdAt.substring(0,10)}</span>
-            </div>
+            <span className={styles.username}>{data?.userEmail}</span>
+            {/* <span className={styles.date}>{data.createdAt.substring(0, 10)}</span> */}
           </div>
+        </div>
 
         {data?.img && (
           <div className={styles.imageContainer}>
-            <Image src={data.img} alt="" layout="fill" className={styles.image} />
+          <Image src={data.img} alt="" layout="fill" className={styles.image} />
+           
           </div>
         )}
       </div>
       {/* CONTENT */}
       <div className={styles.content}>
         <div className={styles.post}>
-          <div
-            className={styles.description}
-            dangerouslySetInnerHTML={{ __html: data?.desc }}
-          />
+          <ReactMarkdown children={data?.desc} />
           <div className={styles.comment}>
-            <Comments postSlug={slug}/>
+            <Comments postSlug={slug} />
           </div>
         </div>
-     
       </div>
     </div>
   );

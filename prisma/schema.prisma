@@ -73,7 +73,7 @@ model Post {
   slug      String    @unique
   title     String
   desc      String
-  img       String?
+  img       String
   views     Int       @default(0)
   catSlug   String
 
