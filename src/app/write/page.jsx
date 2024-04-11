@@ -97,8 +97,7 @@ function WritePage() {
     setContent(newContent)
     
   };
-  
-  
+
   
 const upload_images =async ()=>{
 
@@ -135,7 +134,8 @@ const upload_images =async ()=>{
   }));
 
   // Serialize the updated HTML document back to string
-  const updatedContent = new XMLSerializer().serializeToString(htmlDoc);
+  const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
+
   setContent(updatedContent)
   console.log("Updated Content:", updatedContent);
   
@@ -165,6 +165,7 @@ const upload_images =async ()=>{
           onChange={handleEditorChange}
           modules={quillModules}
           formats={quillFormats}
+
           placeholder="Tell me...."
           theme="bubble"
         />

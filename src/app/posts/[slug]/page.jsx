@@ -49,7 +49,8 @@ const SinglePage = async ({ params }) => {
       {/* CONTENT */}
       <div className={styles.content}>
         <div className={styles.post}>
-          <ReactMarkdown children={data?.desc} />
+        <div dangerouslySetInnerHTML={{__html:data?.desc}}/>
+      
           <div className={styles.comment}>
             <Comments postSlug={slug} />
           </div>
