@@ -6,6 +6,7 @@ import styles from "./writePage.module.css";
 import { useEffect, useState } from "react";
 import { getStorage, ref, uploadString ,getDownloadURL} from "firebase/storage";
 import { app } from "../utils/firebase";
+import Cover from "../components/cover/Cover";
 
 const storage = getStorage(app);
 
@@ -20,11 +21,7 @@ function WritePage() {
 
   const [title, setTitle] = useState("");
 
-  const imageHandler = () => {
-    useEffect(() => {
-      console.log("img handler called");
-    }, []);
-  };
+
 
   const quillModules = {
     toolbar: [
@@ -64,7 +61,6 @@ function WritePage() {
       .replace(/^-+|-+$/g, "");
 
  
- 
 
 
   const handleSubmit = async () => {
@@ -73,7 +69,7 @@ function WritePage() {
       method: "POST",
       body: JSON.stringify({
         title: title,
-        img: "/food.png",
+        img: media,
         desc: content,
         slug: slugify(title),
         catSlug: catSlug || "coding",
@@ -98,7 +94,6 @@ function WritePage() {
     
   };
 
-  
 const upload_images =async ()=>{
 
   var parser = new DOMParser();
@@ -142,8 +137,14 @@ const upload_images =async ()=>{
 
 }
  
+const handleImageUrlChange = (url) => {
+  setMedia(url);
+  console.log("media is :",media)
+};
+
   return (
     <div className={styles.container}>
+    <Cover onImageUrlChange={handleImageUrlChange} />
       <input
         type="text"
         placeholder="Title"

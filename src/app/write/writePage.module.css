@@ -69,8 +69,8 @@
 
   .publish{
     position: absolute;
-    top: 100px;
-    right: 100px;
+    top: 50px;
+    right: 50px;
     padding: 10px 20px;
     border: none;
     background-color: #1a8917;
@@ -78,3 +78,7 @@
     cursor: pointer;
     border-radius: 20px;
   } 
+
+  .cover {
+    margin: 90px 90px;
+  }
