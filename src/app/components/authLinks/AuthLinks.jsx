@@ -1,28 +1,35 @@
 "use client";
 import Link from "next/link";
 import styles from "./authLinks.module.css";
-import { useState } from "react";
+import { useContext,useState} from "react";
 import { signOut, useSession } from "next-auth/react";
+import { MenuItem } from "@mui/material";
+import ThemeToggle from "../themeToggle/ThemeToggle";
+import { ThemeContext } from "../../context/ThemeContext"
+
 
 const AuthLinks = () => {
   const [open, setOpen] = useState(false);
 
   const { status } = useSession();
-
+  const { theme } = useContext(ThemeContext);
+  const itemColor ={color:theme=="dark"? "#ddd":"black"}
   return (
     <>
       {status === "unauthenticated" ? (
-        <Link href="/login" className={styles.link}>
-          Login
-        </Link>
+        <MenuItem sx={itemColor} className={styles.link}>
+         <a href="/login">Login</a> 
+        </MenuItem>
       ) : (
         <>
-          <Link href="/write" className={styles.link}>
-            Write
-          </Link>
-          <span className={styles.link} onClick={signOut}>
+        <MenuItem sx={itemColor} >Profile</MenuItem>
+        <MenuItem sx={itemColor}  className={styles.link}>
+        <a href="/write">Write</a> 
+        </MenuItem>
+         
+         <MenuItem sx={itemColor} className={styles.link} onClick={signOut}>
             Logout
-          </span>
+          </MenuItem>
         </>
       )}
       <div className={styles.burger} onClick={() => setOpen(!open)}>
@@ -39,7 +46,7 @@ const AuthLinks = () => {
             <Link href="/login">Login</Link>
           ) : (
             <>
-              <Link href="/write">Write</Link>
+              <Link className={styles.link} href="/write">Write</Link>
               <span className={styles.link}>Logout</span>
             </>
           )}

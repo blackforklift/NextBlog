@@ -35,9 +35,9 @@ function Cover({ onImageUrlChange }) {
   }
 
   return (
-    <div className={styles.cover}>
-      <h2>Add Image:</h2>
-      <input type="file" onChange={handleChange} />
+    <div  className={styles.cover}>
+      <p>Upload a cover :</p>
+      <input className={styles.input}  type="file" onChange={handleChange} />
       {/* <img src={file} alt="Uploaded"/> */}
       {file && <img src={file} alt="Uploaded" />}
     </div>

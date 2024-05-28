@@ -6,14 +6,17 @@
   }
   
   .wrapper {
-    background-color: var(--softBg);
+    background-color: #e2e5f8;
     padding: 150px 200px;
     display: flex;
     flex-direction: column;
     gap: 50px;
     border-radius: 10px;
-  }
+   
   
+  }
+
+  /* Sosyal medya düğmeleri stilleri */
   .socialButton {
     padding: 20px;
     border-radius: 5px;
@@ -24,10 +27,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #007bff; /* Varsayılan arka plan rengi */
+    transition: background-color 0.3s ease, transform 0.3s ease; 
   }
   
+  .socialButton:hover {
+
+    transform: translateY(-5px); /* Yukarı doğru kayma efekti */
+  }
+  
+  .socialButton:active {
+    transform: translateY(0); /* Aktifken geri dönme efekti */
+  }
   .socialButton:first-child {
-    background-color: #ff5555;
+    background-color: #8e55ff;
   }
   
   .socialButton:nth-child(2) {

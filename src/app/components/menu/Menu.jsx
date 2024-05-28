@@ -7,20 +7,20 @@ const Menu = () => {
   return (
     <div className={styles.container}>
     <div>
-    <h2 className={styles.subtitle}>{"What's hot"}</h2>
+    <h2 className={styles.subtitle}>Trendy</h2>
  
       <h1 className={styles.title}>Most Popular</h1>
-      <MenuPosts withImage={false} />
+      <MenuPosts withImage={false} isPopular={true} />
     </div>
-    <div>
+    {/* <div>
     <h2 className={styles.subtitle}>Discover by topic</h2>
       <h1 className={styles.title}>Categories</h1>
       <MenuCategories />
-    </div>
+    </div> */}
     <div>
-    <h2 className={styles.subtitle}>Chosen by the editor</h2>
-      <h1 className={styles.title}>Editors Pick</h1>
-      <MenuPosts withImage={true} />
+    <h2 className={styles.subtitle}>Chosen by me</h2>
+      <h1 className={styles.title}>Editor's Pick</h1>
+      <MenuPosts withImage={true} isPopular={false} />
     </div>
      
     </div>

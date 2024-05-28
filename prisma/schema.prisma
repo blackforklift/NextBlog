@@ -73,15 +73,17 @@ model Post {
   slug      String    @unique
   title     String
   desc      String
-  img       String
+  img       String?
   views     Int       @default(0)
   catSlug   String
 
   cat       Category?  @relation(fields: [catSlug], references: [slug])
   userEmail String
-  user      User      @relation(fields: [userEmail], references: [email])
+  user      User      @relation(fields: [userEmail], references: [email],onDelete: Cascade) //delete all posts if author is deleted
   comments  Comment[]
   catViews  Int       @map("_catViews") @default(0)
+
+
 }
 
 model Comment {
@@ -91,5 +93,7 @@ model Comment {
   userEmail String
   user      User     @relation(fields: [userEmail], references: [email])
   postSlug  String
-  post      Post     @relation(fields: [postSlug], references: [slug])
+  post      Post     @relation(fields: [postSlug], references: [slug],onDelete: Cascade)//delete all comments if post is deleted
+
+  // Optionally, add onDelete: Cascade for other related entities
 }

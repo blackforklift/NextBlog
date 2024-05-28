@@ -13,7 +13,7 @@ export const metadata = {
   description: "The best tech blog ever!",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children}) {
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
             <ThemeProvider>
               <div className="container">
                 <div className="wrapper">
-                  <Navbar />
+                 <Navbar />
                   {children}
                   <Footer />
                 </div>

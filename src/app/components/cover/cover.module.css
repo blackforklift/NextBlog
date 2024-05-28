@@ -1,3 +1,17 @@
 .cover {
-    margin: 90px 0px 40px 10px;
+    margin:30px 0px 20px 10px;
+    display: flex;
+    flex-direction: column;
+  
   }
+.cover:has(img) img {
+    max-width: 100px;
+    display: none;
+}
+
+.input {
+ color: var(--softie);
+
+    }
+
+    

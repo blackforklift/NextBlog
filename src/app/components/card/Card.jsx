@@ -1,37 +1,13 @@
-"use client";
+"use client"
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import styles from "./card.module.css";
 import Link from "next/link";
-
+import Delete from "../delete/Delete";
+import { Button } from "@mui/material";
 
 const Card = ({ item }) => {
-  const { data: session, status } = useSession()
-  const router = useRouter();
-  
-
-
-  const handledelete = async () => {
-    try {
-      const res = await fetch(`/api/posts?id=${item.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-
-      if (res.status === 200) {
-        const data = await res.json();
-        console.log("successfully deleted", data);
-        router.push("/");
-  
-        
-      }
-    } catch (error) {
-      console.error("Error deleting post:", error);
-    }
-  };
+  const { data: session, status } = useSession();
 
   return (
     <div className={styles.container}>
@@ -51,12 +27,14 @@ const Card = ({ item }) => {
           <Link href={`/posts/${item.slug}`}>
             <h1>{item.title}</h1>
           </Link>
-          {status === "authenticated" && session.user.email === item.userEmail &&
-  (<button className={styles.deleteButton} onClick={handledelete}>Delete</button>)
-}
-
-       
+          {status === "authenticated" &&
+            session.user.email === item.userEmail && (<div>   
+             <Delete key={item._id} item={item} />
+             <Button color="secondary" href={`/write/${item.slug}`} >edit</Button>
+        
+             </div>
           
+            )}
         </div>
         <div
           className={styles.desc}

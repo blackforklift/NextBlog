@@ -2,13 +2,13 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    padding-top: 20px;
+  
   }
   
   .select{
-    margin-bottom: 50px;
+    margin-bottom: 25px;
     padding: 10px 20px;
-    margin-left: 50px;
+
     width: max-content;
     background-color: transparent;
     color: var(--textColor);
@@ -49,8 +49,8 @@
   }
   
   .input{
-    padding: 50px;
-    font-size: 64px;
+    padding: 25px 0 25px 0;
+    font-size: 34px;
     border: none;
     outline: none;
     background-color: transparent;

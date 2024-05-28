@@ -1,0 +1,23 @@
+
+.links {
+    display: flex!important;
+    align-items: center!important;
+    font-size: 20px !important;
+    color: var(--textColor)!important;
+    text-transform: none!important; 
+    padding: 0!important;
+    margin: 0!important;
+    gap: 0!important;
+  }
+
+.menuitem{
+  color: var(--textColor)!important;
+}
+
+.avatar {
+  flex-direction: row-reverse;
+  width: auto;
+  height: 45px;
+  border-radius: 25%;
+  object-fit: cover;
+}

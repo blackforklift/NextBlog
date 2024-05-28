@@ -10,7 +10,7 @@ export const GET = async (req) => {
   const cat = searchParams.get("cat");
   const id = searchParams.get("id");
 
-  const POST_PER_PAGE = 3;
+  const POST_PER_PAGE = 4;
 
   // Ensure that 'page' is a positive integer
   const skip = Math.max(0, POST_PER_PAGE * (page - 1));
@@ -32,6 +32,7 @@ export const GET = async (req) => {
     where: {
       ...(id,cat && { catSlug: cat }),
     },
+    include:{ user: true ,cat:true}
   };
 
   try {
@@ -55,7 +56,8 @@ export const DELETE = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
     const postid = searchParams.get("id");
-    const { user } = req.session; // Assuming user information is passed in the session
+    const session = await getAuthSession();
+    const { user } = session; // Assuming user information is passed in the session
 
     if (!postid) {
       return new NextResponse(
@@ -87,13 +89,62 @@ export const DELETE = async (req) => {
 
     return new NextResponse(JSON.stringify(deletedPost, { status: 200 }));
   } catch (err) {
-    console.log(err);
+    console.log(err); // Log the error message
     return new NextResponse(
       JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
     );
   }
 };
 
+
+export const PUT  = async (req) => {
+  try {
+    const { searchParams } = new URL(req.url);
+    const body = await req.json();
+    const postid = searchParams.get("id");
+    const session = await getAuthSession();
+    const { user } = session; // Assuming user information is passed in the session
+
+    if (!postid) {
+      return new NextResponse(
+        JSON.stringify({ message: "Missing postId parameter!" }, { status: 400 })
+      );
+    }
+
+    const post = await prisma.post.findUnique({
+      where: { id: postid },
+      select: { userEmail: true },
+    });
+
+    if (!post) {
+      return new NextResponse(
+        JSON.stringify({ message: "Post not found!" }, { status: 404 })
+      );
+    }
+
+    // Check if the user is the author of the post
+    if (post.userEmail !== user.email) {
+      return new NextResponse(
+        JSON.stringify({ message: "Unauthorized to edit this post!" }, { status: 403 })
+      );
+    }
+
+    const UpdatedPost = await prisma.post.update({
+      where: { id: postid },
+      data: body
+    });
+
+
+
+
+    return new NextResponse(JSON.stringify(UpdatedPost, { status: 200 }));
+  } catch (err) {
+    console.log(err); // Log the error message
+    return new NextResponse(
+      JSON.stringify({ message: "Something went wrong!" }, { status: 500 })
+    );
+  }
+};
 
 // CREATE A POST
 export const POST = async (req) => {

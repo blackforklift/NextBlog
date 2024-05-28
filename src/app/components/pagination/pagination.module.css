@@ -7,12 +7,12 @@
     width: 100px;
     border: none;
     padding: 16px;
-    background-color: crimson;
+    background-color:var(--mytextColor);
     color: white;
     cursor: pointer;
   }
   
   .button:disabled{
-    background-color: rgba(220, 20, 60, 0.473);
+    background-color: #d84aff9e;
     cursor: not-allowed;
   }
