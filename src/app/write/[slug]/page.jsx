@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-import { app } from "../../utils/firebase"
+import { app } from "../../utils/firebase";
 import Cover from "../../components/cover/Cover";
 import styles from "../writePage.module.css";
-import ImageResize from 'quill-image-resize-module-react';
-import { Quill } from 'react-quill';
-import { Button } from "@mui/material";
+import { Quill } from "react-quill";
+import ImageResize from "quill-image-resize-module-react";
 
 const storage = getStorage(app);
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
@@ -22,8 +21,9 @@ function WritePage({ params }) {
   const [title, setTitle] = useState("");
   const router = useRouter();
   const { slug } = params || {};
-  console.log("slugg sent to writepage",slug)
   const [isEditMode, setIsEditMode] = useState(false);
+  const processedUrls = new Set();
+  console.log(slug)
 
   useEffect(() => {
     if (slug) {
@@ -33,7 +33,7 @@ function WritePage({ params }) {
   }, [slug]);
 
   const fetchPostData = async (slug) => {
-    const res = await fetch(`http://localhost:3000/api/posts/${slug}?`);
+    const res = await fetch(`/api/posts/${slug}`);
     if (res.ok) {
       const data = await res.json();
       setTitle(data.title);
@@ -57,7 +57,6 @@ function WritePage({ params }) {
       ["clean"],
     ],
     clipboard: {
-      // toggle to add extra line breaks when pasting HTML:
       matchVisual: false
     },
     imageResize: {
@@ -81,7 +80,7 @@ function WritePage({ params }) {
     "color",
     "code-block",
   ];
-  console.log("edit mode : ",isEditMode)
+
   const slugify = (str) =>
     str
       .toLowerCase()
@@ -90,86 +89,66 @@ function WritePage({ params }) {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
+  const handleEditorChange = (newContent) => {
+    setContent(newContent);
+  };
+
+  const handleImageUrlChange = (url) => {
+    setMedia(url);
+  };
+
   const handleSubmit = async () => {
-    const method = isEditMode ? "PUT" : "POST";
-   
-    const endpoint = isEditMode ? `/api/posts/${slug}` : "/api/posts";
+    try {
+      var parser = new DOMParser();
+      var htmlDoc = parser.parseFromString(content, 'text/html');
+      const imgs = htmlDoc.querySelectorAll('img');
 
-    const res = await fetch(endpoint, {
-      method: method,
-      body: JSON.stringify({
-        title: title,
-        img: media,
-        desc: content,
-        slug: slugify(title),
-        catSlug: catSlug || "coding",
-      }),
-    });
+      await Promise.all(Array.from(imgs).map(async (img) => {
+        let url = img.getAttribute('src');
 
-    if (res.status === 200) {
-      const data = await res.json();
-      router.push(`/posts/${data.slug}`);
-    } else {
-      console.error("Error submitting post:", await res.text());
-    }
-  };
+        if (!url.startsWith("https://firebase") && !processedUrls.has(url)) {
+          processedUrls.add(url);
 
-   // Set to keep track of processed URLs
-   const processedUrls = new Set();
+          const name = new Date().getTime() + 1;
+          const storageRef = ref(storage, name.toString());
 
-  const handleEditorChange = async (newContent) => {
-    setContent(newContent)
-    
-  };
+          await uploadString(storageRef, url, 'data_url').then(async (snapshot) => {
+            const downloadUrl = await getDownloadURL(storageRef);
+            img.setAttribute('src', downloadUrl);
+          }).catch(error => {
+            console.error('Error uploading:', error);
+          });
+        }
+      }));
 
-const upload_images =async ()=>{
+      const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
+      setContent(updatedContent);
 
-  var parser = new DOMParser();
-  var htmlDoc = parser.parseFromString(content, 'text/html');
-  const imgs = htmlDoc.querySelectorAll('img');
+      const method = isEditMode ? "PATCH" : "POST";
+      const endpoint = isEditMode ? `/api/posts/${slug}` : "/api/posts";
 
-  // Extract the src attribute value from each img element
-  await Promise.all(Array.from(imgs).map(async (img) => {
-    let url = img.getAttribute('src');
-    console.log("url", url);
-
-    // Check if the URL doesn't start with "firebase" and is not already processed
-    if (!url.startsWith("https://firebase") && !processedUrls.has(url)) {
-      processedUrls.add(url); // Add URL to processed set
-
-
-      const name = new Date().getTime() + 1;
-      console.log("n.:", name.toString());
-      const name_string = name.toString();
-      const storageRef = ref(storage, name_string);
-
-      await uploadString(storageRef, url, 'data_url').then(async (snapshot) => {
-        console.log('Uploaded ' + name_string + ' data_url string!');
-        // Download the uploaded URL
-        const downloadUrl = await getDownloadURL(storageRef);
-        // Replace the src attribute with the downloaded URL
-        img.setAttribute('src', downloadUrl);
-        console.log('Downloaded URL:', downloadUrl);
-      }).catch(error => {
-        console.error('Error uploading:', error);
+      const res = await fetch(endpoint, {
+        method: method,
+        body: JSON.stringify({
+          title: title,
+          img: media,
+          desc: updatedContent,
+          slug: slugify(title),
+          catSlug: catSlug || "coding",
+        }),
       });
+
+      if (res.ok) {
+        const data = await res.json();
+        router.push(`/posts/${data.slug}`);
+      } else {
+        const errorText = await res.text();
+        console.error("Error submitting post:", errorText);
+      }
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
     }
-  }));
-
-  // Serialize the updated HTML document back to string
-  const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
-
-  setContent(updatedContent)
-  console.log("Updated Content:", updatedContent);
-  
-
-}
- 
-const handleImageUrlChange = (url) => {
-  setMedia(url);
-  console.log("media is :",media)
-};
-
+  };
 
   return (
     <div className={styles.container}>
@@ -202,7 +181,6 @@ const handleImageUrlChange = (url) => {
       <button className={styles.publish} onClick={handleSubmit}>
         {isEditMode ? "Update" : "Publish"}
       </button>
-      <Button onClick={upload_images}>Upload Images</Button>
     </div>
   );
 }
