@@ -5,10 +5,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from '@mui/material';
+import { useRouter } from 'next/navigation';
 import DeleteIcon from '@mui/icons-material/Delete';
 const Delete = ({item}) => {
   const [open, setOpen] = React.useState(false);
-
+  const router = useRouter();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -31,7 +32,7 @@ const Delete = ({item}) => {
             const data = await res.json();
             console.log("successfully deleted", data);
 
-            router.push("/");
+            router.refresh();
           }
         } catch (error) {
           console.error("Error deleting post:", error);
