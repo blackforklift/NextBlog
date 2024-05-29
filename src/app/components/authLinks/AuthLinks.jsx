@@ -12,6 +12,8 @@ const AuthLinks = () => {
   const [open, setOpen] = useState(false);
 
   const { status } = useSession();
+  const { data:session } = useSession();
+
   const { theme } = useContext(ThemeContext);
   const itemColor ={color:theme=="dark"? "#ddd":"black"}
   return (
@@ -22,7 +24,7 @@ const AuthLinks = () => {
         </MenuItem>
       ) : (
         <>
-        <MenuItem sx={itemColor} >Profile</MenuItem>
+        <MenuItem  sx={itemColor} ><a href={`/profile/${session.user.email}`}>Profile</a> </MenuItem>
         <MenuItem sx={itemColor}  className={styles.link}>
         <a href="/write">Write</a> 
         </MenuItem>

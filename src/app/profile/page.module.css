@@ -1,0 +1,8 @@
+.input{
+    padding: 25px 0 25px 0;
+    font-size: 34px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--textColor);
+  }

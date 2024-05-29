@@ -33,7 +33,7 @@ export default function Dropdown() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <img className={styles.avatar} src={session&&session.user.image}></img>
+       { session !== null ? <img className={styles.avatar} src={session&&session.user.image}></img>:"Login"} 
       </Button>
       <Menu
         id="demo-positioned-menu"
