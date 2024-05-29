@@ -74,42 +74,17 @@ function WritePage() {
       .replace(/[\s_-]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
- 
+    // Set to keep track of processed URLs
+    const processedUrls = new Set();
+
+    const handleEditorChange = async (newContent) => {
+     setContent(newContent)
+     
+   };
 
 
   const handleSubmit = async () => {
     console.log("Submitting post...");
-    upload_images()
-    const res = await fetch("/api/posts", {
-      method: "POST",
-      body: JSON.stringify({
-        title: title,
-        img: media,
-        desc: content,
-        slug: slugify(title),
-        catSlug: catSlug || "coding",
-      }),
-    });
-
-    console.log("Response status:", res.status);
-    if (res.status === 200) {
-      const data = await res.json();
-      console.log("Post submitted successfully:", data);
-      router.push(`/posts/${data.slug}`);
-    } else {
-      console.error("Error submitting post:", await res.text());
-    }
-  };
-
-   // Set to keep track of processed URLs
-   const processedUrls = new Set();
-
-   const handleEditorChange = async (newContent) => {
-    setContent(newContent)
-    
-  };
-  const upload_images =async ()=>{
-
     var parser = new DOMParser();
     var htmlDoc = parser.parseFromString(content, 'text/html');
     const imgs = htmlDoc.querySelectorAll('img');
@@ -142,18 +117,35 @@ function WritePage() {
       }
     }));
 
-
-
-
   // Serialize the updated HTML document back to string
   const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
 
   setContent(updatedContent)
-  console.log("Updated Content:", updatedContent);
-  
+  console.log("Updated Content:", updatedContent); 
 
-}
- 
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      body: JSON.stringify({
+        title: title,
+        img: media,
+        desc: updatedContent,
+        slug: slugify(title),
+        catSlug: catSlug || "coding",
+      }),
+    });
+
+    console.log("Response status:", res.status);
+    if (res.status === 200) {
+      const data = await res.json();
+      console.log("Post submitted successfully:", data);
+      router.push(`/posts/${data.slug}`);
+    } else {
+      console.error("Error submitting post:", await res.text());
+    }
+  };
+
+
+
 const handleImageUrlChange = (url) => {
   setMedia(url);
   console.log("media is :",media)
@@ -191,7 +183,7 @@ const handleImageUrlChange = (url) => {
       <button className={styles.publish} onClick={handleSubmit}>
         Publish
       </button>
-      <Button onClick={upload_images}>Upload Images</Button>
+
     </div>
   );
 }
