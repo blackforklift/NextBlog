@@ -1,10 +1,10 @@
-import ThemeProvider from "./providers/ThemeProvider";
-import { ThemeContextProvider } from "./context/ThemeContext";
-import Footer from "./components/footer/Footer";
-import Navbar from "./components/navbar/Navbar";
-import "./globals.css";
+import ThemeProvider from "../providers/ThemeProvider";
+import { ThemeContextProvider } from "../context/ThemeContext";
+import Footer from "../components/footer/Footer";
+import Navbar from "../components/navbar/Navbar";
+import "../globals.css";
 import { Inter } from "next/font/google";
-import AuthProvider from "./providers/AuthProvider";
+import AuthProvider from "../providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 

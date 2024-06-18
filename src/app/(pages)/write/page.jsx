@@ -4,10 +4,9 @@ import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import { useRouter } from "next/navigation";
 import styles from "./writePage.module.css";
 import { useState } from "react";
-import { Button } from "@mui/material";
 import { getStorage, ref, uploadString ,getDownloadURL} from "firebase/storage";
-import { app } from "../utils/firebase";
-import Cover from "../components/cover/Cover";
+import { app } from "../../utils/firebase";
+import Cover from "../../components/cover/Cover";
 import ImageResize from 'quill-image-resize-module-react';
 import { Quill } from 'react-quill';
 
@@ -31,8 +30,10 @@ function WritePage() {
 
   const quillModules = {
     toolbar: [
-      [{ header: [1, 2, 3, false] }],
+      [{ header: [1, 2, 3, 4, false] }],
+      [{ size: ['small', false, 'large', 'huge'] }],
       ["italic", "underline", "strike", "blockquote"],
+
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
       [{ align: [] }],
@@ -64,6 +65,7 @@ function WritePage() {
     "align",
     "color",
     "code-block",
+    "size",
   ];
 
   const slugify = (str) =>

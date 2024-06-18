@@ -1,0 +1,114 @@
+[33mcommit d0b9671ee5ef5a2a1aeab90f8a790d7b35198a2b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu May 30 02:25:56 2024 +0700
+
+    add profile route to display and update profile info
+
+[33mcommit ea0b3456c4872176549f5eceafc01132af0210cf[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu May 30 02:23:45 2024 +0700
+
+    add utils.js to call functions
+
+[33mcommit a9d5745b3e7e0454dde68dfccadbb4c637d076b1[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu May 30 02:22:35 2024 +0700
+
+    replace upload image logic inside handle
+
+[33mcommit 35590563aa7b4f793ca2755d8cbde2fa38b6894f[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu May 30 02:17:58 2024 +0700
+
+    re-edit patch update route to accept new category
+
+[33mcommit 662ec46982137b0520489ed10724a1ee47945dc1[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Wed May 29 22:29:01 2024 +0700
+
+    remove upload images button and replace uploadImage logic inside handleSubmit
+
+[33mcommit f06329dc0e467c652a2544674f4114fe693cd878[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Wed May 29 22:09:04 2024 +0700
+
+    add  router.refresh
+
+[33mcommit 3692471ff26115f09fd550a93eba295cd49c88f0[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Wed May 29 04:15:04 2024 +0700
+
+    add editing functionality and add avatar dropdown to the navbar
+
+[33mcommit ba418f1c5cf2b967aab68a5c1019516c4a4355c8[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Fri Apr 12 18:44:09 2024 +0300
+
+     Function to resize image URLs and add width to img tag that is inside content
+
+[33mcommit e026668859c9dd19531c888b23aed78c347eb0ae[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Fri Apr 12 14:03:55 2024 +0300
+
+    using cover component for cover image to display
+
+[33mcommit 94f967d941641bd69b901c0ef511f474134c7c38[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Fri Apr 12 14:01:43 2024 +0300
+
+    Cover component add for the cover image of blog posts
+
+[33mcommit 9cb503b8b9d515245103ae7ee933188253844669[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu Apr 11 22:46:39 2024 +0300
+
+    fixed html display
+
+[33mcommit 851aec03173145826f37366cc7592bf2273e31cd[m
+Merge: 40ae3c5 bb9feb5
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu Apr 11 21:29:07 2024 +0300
+
+    Merge branch 'main' of https://github.com/blackforklift/NextBlog
+
+[33mcommit 40ae3c5af88facf30cafa604277bd482dc47d601[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Thu Apr 11 21:24:15 2024 +0300
+
+    write page multiple image adding fuctionality
+
+[33mcommit bb9feb5dc7bfc3b220fa2791a22597e9a901b3bb[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Wed Jan 31 15:52:29 2024 +0300
+
+    Update README.md
+
+[33mcommit 16ac736e2909b5b2177a0d6d6616bd06288f65ff[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Wed Jan 31 15:40:38 2024 +0300
+
+    solid
+
+[33mcommit 4590f5c3164deb2f1da6ee6bc29b2147cefead49[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Sun Jan 14 23:57:07 2024 +0300
+
+    commit
+
+[33mcommit c4a49c9b538c99db78339e16bfbdaef1a4765133[m
+Author: dilan saskin <dilansskn@gmail.com>
+Date:   Sun Jan 14 23:54:57 2024 +0300
+
+    blog app's early state
+
+[33mcommit e6c70300f79c30d15757ed4e55aa1cec834d8626[m[33m ([m[1;31morigin/starter[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Safak <lama@dev.local>
+Date:   Sun Aug 27 14:49:21 2023 +0200
+
+    first commit
+
+[33mcommit 42453138179561c246e3bdd9667fe9905ecbc681[m
+Author: Safak <lama@dev.local>
+Date:   Sun Aug 27 14:45:29 2023 +0200
+
+    Initial commit from Create Next App

@@ -2,7 +2,7 @@ import prisma from "../../../utils/connect";
 import { NextResponse } from "next/server";
 import { getAuthSession } from "../../../utils/auth";
 import { update } from "firebase/database";
-import { generateRandomColor } from "../../utils/utils";
+import { generateRandomColor } from "../../../utils/utils";
 
 // GET SINGLE POST
 export const GET = async (req, { params }) => {

@@ -1,7 +1,7 @@
-import Menu from "../../components/menu/Menu";
+import Menu from "../../../components/menu/Menu";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
-import Comments from "../../components/comments/Comments";
+import Comments from "../../../components/comments/Comments";
 
 // const resizeImageURLs = (html) => {
 //   const imgRegex = /<img.*?src="(.*?)".*?>/g;
