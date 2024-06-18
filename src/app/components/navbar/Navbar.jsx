@@ -17,7 +17,7 @@ const Navbar = () => {
     
     <img
         className={styles.logo2}
-        src={theme === "light" ? "/DilanTech_nm.png" : "/DilanTech1.png"}
+        src={theme === "light" ? "/logoforlight.png" : "/logofordark.png"}
         alt="DilanTech Logo"
       />
       {/* <div className={styles.logo}>Dilantech</div> */}
