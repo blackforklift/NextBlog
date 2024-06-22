@@ -7,12 +7,12 @@
     width: 100px;
     border: none;
     padding: 16px;
-    background-color:var(--mytextColor);
+    background-color:var(--softie);
     color: white;
     cursor: pointer;
   }
   
   .button:disabled{
-    background-color: #d84aff9e;
+    background-color: #e2acf19e;
     cursor: not-allowed;
   }
