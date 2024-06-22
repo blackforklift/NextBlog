@@ -51,9 +51,9 @@
   
   .avatar {
     flex-direction: row-reverse;
-    width: 80%;
+    width: 70%;
     height: auto;
-    border-radius: 50%;
+ 
     object-fit: cover;
   }
   

@@ -32,13 +32,13 @@ function WritePage() {
     toolbar: [
       [{ header: [1, 2, 3, 4, false] }],
       [{ size: ['small', false, 'large', 'huge'] }],
-      ["italic", "underline", "strike", "blockquote"],
-
+      ["bold","italic", "underline", "strike", "blockquote","code-block"],
+      [{ 'font': [] }, { 'size': [] }]
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
       [{ align: [] }],
       [{ color: [] }],
-      ["code-block"],
+
       ["clean"],
     ],
     clipboard: {
@@ -90,7 +90,18 @@ function WritePage() {
     var parser = new DOMParser();
     var htmlDoc = parser.parseFromString(content, 'text/html');
     const imgs = htmlDoc.querySelectorAll('img');
-  
+      
+//add id to headings
+const headings = htmlDoc.querySelectorAll('h1, h2, h3');      
+
+headings.forEach(heading => {
+  const text = heading.textContent || heading.innerText;
+  const id = text.toLowerCase();
+  heading.id = id;
+});
+
+
+ 
     // Extract the src attribute value from each img element
     await Promise.all(Array.from(imgs).map(async (img) => {
       let url = img.getAttribute('src');
