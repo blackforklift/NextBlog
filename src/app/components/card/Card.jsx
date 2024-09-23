@@ -19,7 +19,7 @@ const Card = ({ item }) => {
       <div className={styles.textContainer}>
         <div className={styles.detail}>
           <span className={styles.date}>
-            {item.createdAt.substring(0, 10)} -{" "}
+            {item.createdAt.substring(0,10)} -{" "}
           </span>
           <span className={styles.category}>{item.catSlug}</span>
         </div>
@@ -27,19 +27,12 @@ const Card = ({ item }) => {
           <Link href={`/posts/${item.slug}`}>
             <h1>{item.title}</h1>
           </Link>
-          {status === "authenticated" &&
-            session.user.email === item.userEmail && (<div>   
-             <Delete key={item._id} item={item} />
-             <Button color="secondary" href={`/write/${item.slug}`} >edit</Button>
         
-             </div>
-          
-            )}
         </div>
         <div
           className={styles.desc}
           dangerouslySetInnerHTML={{
-            __html: item?.desc.substring(0, 140) + "...",
+            __html: item?.desc.substring(0, 200) + "...",
           }}
         />
         <Link href={`/posts/${item.slug}`} className={styles.link}>

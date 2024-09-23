@@ -61,10 +61,10 @@
   }
   
   .date{
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .desc{
-    font-size: 18px;
+    font-size: 18px !important;
     font-weight: 300;
   }

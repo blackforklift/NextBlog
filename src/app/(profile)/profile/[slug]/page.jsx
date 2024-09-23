@@ -1,9 +1,7 @@
 "use client"
-import { useRouter } from 'next/navigation';
-import Profile from '../../../components/profile/Profile'
+import Profile from '../../../components/profile/Profile';
 
 const ProfilePage = ({ params }) => {
-
   const { slug } = params;
 
   if (!slug) {

@@ -4,7 +4,6 @@ import Menu from '@mui/material/Menu';
 import AuthLinks from '../authLinks/AuthLinks';
 import styles from "./dropDown.module.css"
 import { useSession } from "next-auth/react";
-import { MenuItem } from "@mui/material";
 
 
 
@@ -34,7 +33,9 @@ export default function Dropdown() {
         onClick={handleClick}
       >
        { session !== null ? <img className={styles.avatar} src={session&&session.user.image}></img>:"Login"} 
+
       </Button>
+
       <Menu
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"

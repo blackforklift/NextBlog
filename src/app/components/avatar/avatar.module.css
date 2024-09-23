@@ -1,0 +1,8 @@
+.avatar {
+  flex-direction: row-reverse;
+  width: auto;
+  height: 45px;
+  border-radius: 25%;
+  object-fit: cover;
+  color: var(--textColor)!important;
+}

@@ -1,8 +1,9 @@
-import React from 'react';
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBBtn, MDBTypography } from 'mdb-react-ui-kit';
-import { useState, useEffect, useRef } from 'react';
-import styles from "./profile.module.css"
-
+import React, { useState, useEffect } from "react";
+import styles from "./profile.module.css";
+import Avatar from "../avatar/Avatar";
+import { Button } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const getData = async (slug) => {
   const res = await fetch(`/api/profile/${slug}`, {
@@ -16,39 +17,74 @@ const getData = async (slug) => {
   return res.json();
 };
 
-export default function EditButton({ slug }) {
+const capitalizeName = (name) => {
+  return name.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+export default function Profile({ slug }) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const [data, setData] = useState(null);
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [inputWidth, setInputWidth] = useState('auto');
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const result = await getData(slug);
-        setData(result);
-        setName(result.name);
-        setImage(result.image);
-        setInputWidth(calculateInputWidth(result.name));
-      } catch (error) {
-        console.error(error);
-      }
-      setLoading(false);
-    };
-
-    fetchData();
+    getData(slug)
+      .then((data) => {
+        setData(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   }, [slug]);
 
-  return (
-    <div className={styles.gradientcustom2} style={{ backgroundColor: '#9de2ff' }}>
-      <MDBContainer className="py-5 h-100">
-        <MDBRow className="justify-content-center align-items-center h-100">
-          
-   </MDBRow>
-   </MDBContainer>
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
+  if (!data) {
+    return <div>Loading ... </div>;
+  }
+
+  const name = capitalizeName(data.name);
+
+  const handleBackClick = () => {
+    router.back();
+  };
+
+  return (
+    <div>
+      <div className={styles.container}>
+        <Button
+          variant="text"
+          onClick={handleBackClick}
+          className={styles.backButton}>Back
+          </Button>
+
+        <Avatar
+          avatarStyle={styles.cavatar}
+          src={data.avatarUrl}
+          alt={name}
+          size="150px"
+        />
+
+        <div>
+          <h3 className={styles.text}>{name}</h3>
+        </div>
+        <div className={styles.transparent}>
+          <p>{data.desc}</p>
+        </div>
+      </div>
+      <div className={styles.menu}>
+        <Button variant="text" color="secondary">Published Posts</Button>
+        <div>
+          {session?.user?.email === data.email ? (
+            <Button variant="text" color="secondary"> Saved Posts</Button>
+          ) : (
+            ""
+          )}
+        </div>
+      </div>
     </div>
   );
 }

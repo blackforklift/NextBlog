@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Toc.module.css'; 
-
-import { useHeadsObserver } from '../../utils/hooks'
+import { useHeadsObserver } from '../../utils/hooks';
 
 const Toc = ({ data }) => {
-
-    const {activeId} = useHeadsObserver()
-
+  const { activeId } = useHeadsObserver();
   const [headings, setHeadings] = useState([]);
 
   useEffect(() => {
     const document = new DOMParser().parseFromString(data, 'text/html');
-    const elements = Array.from(document.querySelectorAll('h1,h2, h3, h4')).map(
-      (elem) => ({
+    const elements = Array.from(document.querySelectorAll('h1, h2, h3, h4'))
+      .filter(elem => elem.id && elem.innerText.trim())
+      .map((elem) => ({
         id: elem.id,
         text: elem.innerText,
-        level: "head"+parseInt(Number(elem.nodeName.charAt(1))),
-      })
-    );
+        level: "head" + parseInt(Number(elem.nodeName.charAt(1))),
+      }));
     setHeadings(elements);
   }, [data]);
-
-
 
   return (
     <div className={styles.tocContainer}>
@@ -29,7 +24,7 @@ const Toc = ({ data }) => {
       <ul>
         {headings.map((heading) => (
           <li
-            key={heading.id}
+            key={heading.id} 
             style={
               heading.level === "head1"
                 ? { margin: "10px 0 0 0px", listStyleType: "circle" }
@@ -38,7 +33,7 @@ const Toc = ({ data }) => {
                 : { margin: "10px 0 0 35px", listStyleType: "square" }
             }
           >
-            <a href={`#${heading.id}`}>
+            <a href={`#${heading.id}`} className={activeId === heading.id ? styles.active : ''}>
               {heading.text}
             </a>
           </li>
@@ -46,7 +41,6 @@ const Toc = ({ data }) => {
       </ul>
     </div>
   );
-  
 };
 
 export default Toc;

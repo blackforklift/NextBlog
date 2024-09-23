@@ -1,27 +1,34 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../utils/connect";
 import { getAuthSession } from "../../../utils/auth"
-// get user data
+
+// Get user data
 export const GET = async (req, { params }) => {
   const { slug } = params;
-  
 
-  const session = await getAuthSession();
-
-  if (session.user.email !== slug) {
-    return new NextResponse(
-      JSON.stringify({ message: "Not Authenticated!" }, { status: 401 })
-    );
-  }
+  // Sanitizie slug to prevent attacks
+  const sanitizedSlug = slug.replace(/[^a-zA-Z0-9@.]/g, "");
 
   try {
     const profile = await prisma.user.findUnique({
-      where: { email: slug },
+      where: { email: sanitizedSlug },
+      select: {
+        name: true,
+        email: true,
+        image: true,
+        desc: true,
+      },
     });
 
-   return new NextResponse(JSON.stringify(profile), { status: 200 });
+    if (!profile) {
+      return new NextResponse(
+        JSON.stringify({ message: "User not found!" }),
+        { status: 404 }
+      );
+    }
 
-   
+    return new NextResponse(JSON.stringify(profile), { status: 200 });
+
   } catch (err) {
     console.error("Error fetching user data:", err);
     return new NextResponse(
@@ -30,7 +37,6 @@ export const GET = async (req, { params }) => {
     );
   }
 };
-
 // update user data
 export const PUT = async (req, { params }) => {
   const { slug } = params;

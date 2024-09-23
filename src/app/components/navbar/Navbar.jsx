@@ -15,11 +15,14 @@ const Navbar = () => {
   return (
     <div className={styles.container}>
     
-    <img
+   <Link href="/">
+   <img
         className={styles.logo2}
         src={theme === "light" ? "/logoforlight.png" : "/logofordark.png"}
+    
         alt="DilanTech Logo"
-      />
+      /> 
+      </Link> 
       {/* <div className={styles.logo}>Dilantech</div> */}
       <div className={styles.links}>
         <ThemeToggle />

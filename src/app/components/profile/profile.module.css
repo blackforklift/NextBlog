@@ -1,10 +1,49 @@
-.gradientcustom2 {
-  /* fallback for old browsers */
+.container {
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 5px;
+  justify-content: center;
+  /*for old browsers */
   background: #fbc2eb;
-  
-  /* Chrome 10-25, Safari 5.1-6 */
+  position: relative; 
   background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
   
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* newer browsers*/
   background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1))
   }
+
+.menu{
+  display: flex;
+  justify-content: space-evenly;
+}
+  .text{
+    margin: 1vh;
+    color: rgb(129, 29, 152);
+  }
+
+  .transparent {
+    background-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 2vh;
+    padding: 10px;
+    border-radius: 5px;
+    color: rgb(113, 112, 113);
+    display: inline-block;
+}
+.backButton {
+
+  position: absolute !important;
+  left: 10px;
+  top: 10px;
+
+}
+
+
+@media screen and (min-width:768px) {
+
+  .backButton{
+    display: none !important;
+  }
+  
+}

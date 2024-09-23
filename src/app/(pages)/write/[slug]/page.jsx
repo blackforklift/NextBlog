@@ -138,8 +138,8 @@ function WritePage({ params }) {
       const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
       setContent(updatedContent);
 
-      const method = isEditMode ? "PATCH" : "POST";
-      const endpoint = isEditMode ? `/api/posts/${slug}` : "/api/posts";
+      const method="PATCH";
+      const endpoint = `/api/posts/${slug}`;
 
       const res = await fetch(endpoint, {
         method: method,
@@ -148,7 +148,7 @@ function WritePage({ params }) {
           img: media,
           desc: updatedContent,
           slug: slugify(title),
-          catSlug: catSlug || "coding",
+          catSlug: catSlug.toLowerCase() || "unknown",
         }),
       });
 

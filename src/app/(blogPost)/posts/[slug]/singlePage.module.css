@@ -15,7 +15,7 @@
     align-content: center;
     justify-content: center;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 25px;
     gap: 5%;
   }
@@ -33,7 +33,7 @@
  
   .user{
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     gap: 10px;
     display: flex;
     justify-content: flex-start;
@@ -41,6 +41,7 @@
     align-items: center;
     color: var(--softTextColor);
   }
+
 
 
   .userImageContainer {
@@ -66,7 +67,11 @@
     object-fit: cover;
 
   }
-  
+  .crud{
+    display: flex;
+    gap: 1vw;
+    flex-direction: column-reverse;
+  }
 
   
   .image {
@@ -107,6 +112,13 @@
 
   }
   @media screen and (max-width: 640px) {
+    .username{
+    white-space: nowrap; /** do not slice my sentence **/
+    }
+
+    .crud{
+      display: none;
+    }
     .title {
       font-size: 30px;
     }
@@ -115,6 +127,10 @@
     }
 .date{
   display: none;
+}
+
+.textContainer {
+  padding: 1vh;
 }
   
     .description p{
