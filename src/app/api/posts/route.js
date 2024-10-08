@@ -10,7 +10,7 @@ export const GET = async (req) => {
   const cat = searchParams.get("cat");
   const id = searchParams.get("id");
 
-  const POST_PER_PAGE = 4;
+  const POST_PER_PAGE = 5;
 
   // Ensure that 'page' is a positive integer
   const skip = Math.max(0, POST_PER_PAGE * (page - 1));
@@ -22,16 +22,20 @@ export const GET = async (req) => {
   orderBy: { views: 'desc' },
   where: {
     ...(cat && { catSlug: cat }),
+    ispublished: true, 
   },
-  include:{ user: true ,cat:true}
+  include:{ user: true ,cat:true},
+  
 };
   const query = {
     take: POST_PER_PAGE,
     skip: skip,
     orderBy: { createdAt: 'desc' }, // Order by creation date in descending order
-    where: {
-      ...(id,cat && { catSlug: cat }),
-    },
+   where: {
+  ...(cat && { catSlug: cat }), 
+  ...(id && { id: id }),
+  ispublished: true, 
+},
     include:{ user: true ,cat:true}
   };
 
@@ -101,7 +105,6 @@ export const DELETE = async (req) => {
 // CREATE A POST
 export const POST = async (req) => {
   const session = await getAuthSession();
-
   if (!session) {
     return new NextResponse(
       JSON.stringify({ message: "Not Authenticated!" }, { status: 401 })

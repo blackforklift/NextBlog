@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styles from "./profile.module.css";
 import Avatar from "../avatar/Avatar";
-import { Button } from "@mui/material";
+import { Button, Tabs, Tab } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Userposts from "../userposts/Userposts";
 
 const getData = async (slug) => {
   const res = await fetch(`/api/profile/${slug}`, {
@@ -11,7 +12,43 @@ const getData = async (slug) => {
   });
 
   if (!res.ok) {
-    throw new Error("Failed");
+    throw new Error("Failed to fetch profile data");
+  }
+
+  return res.json();
+};
+
+const getPublishedPosts = async (slug) => {
+  const res = await fetch(`/api/userposts/${slug}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch published posts");
+  }
+
+  return res.json();
+};
+
+const getSavedPosts = async (slug) => {
+  const res = await fetch(`/api/savedposts/${slug}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch saved posts");
+  }
+
+  return res.json();
+};
+
+const getDrafts = async (slug) => {
+  const res = await fetch(`/api/userdrafts/${slug}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch drafts");
   }
 
   return res.json();
@@ -26,17 +63,47 @@ export default function Profile({ slug }) {
   const router = useRouter();
 
   const [data, setData] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("published");
 
   useEffect(() => {
-    getData(slug)
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const profileData = await getData(slug);
+        setData(profileData);
+
+        // Fetch the initial posts based on the active tab
+        const fetchedPosts = await getPublishedPosts(slug);
+        setPosts(fetchedPosts);
+      } catch (error) {
         setError(error.message);
-      });
+      }
+    };
+
+    fetchData();
   }, [slug]);
+
+  useEffect(() => {
+    const fetchTabData = async () => {
+      try {
+        let fetchedPosts;
+        if (activeTab === "published") {
+          fetchedPosts = await getPublishedPosts(slug);
+        } else if (activeTab === "saved") {
+          
+          fetchedPosts = await getSavedPosts(slug);
+        } else if (activeTab === "drafts") {
+          fetchedPosts = await getDrafts(slug);
+        }
+        setPosts(fetchedPosts);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchTabData();
+  }, [activeTab, slug]); // Fetch data whenever the active tab or slug changes
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -47,6 +114,8 @@ export default function Profile({ slug }) {
   }
 
   const name = capitalizeName(data.name);
+  let srcimage =data.image
+
 
   const handleBackClick = () => {
     router.back();
@@ -58,12 +127,14 @@ export default function Profile({ slug }) {
         <Button
           variant="text"
           onClick={handleBackClick}
-          className={styles.backButton}>Back
-          </Button>
+          className={styles.backButton}
+        >
+          Back
+        </Button>
 
         <Avatar
           avatarStyle={styles.cavatar}
-          src={data.avatarUrl}
+          src={srcimage}
           alt={name}
           size="150px"
         />
@@ -75,16 +146,22 @@ export default function Profile({ slug }) {
           <p>{data.desc}</p>
         </div>
       </div>
-      <div className={styles.menu}>
-        <Button variant="text" color="secondary">Published Posts</Button>
-        <div>
-          {session?.user?.email === data.email ? (
-            <Button variant="text" color="secondary"> Saved Posts</Button>
-          ) : (
-            ""
+      <div className={styles.tab}>
+        <Tabs
+          value={activeTab}
+          onChange={(event, newValue) => setActiveTab(newValue)}
+        >
+          <Tab label="Published Posts" value="published" />
+          {session?.user?.email === data.email && (
+            <Tab label="Drafts" value="drafts" />
           )}
-        </div>
+          {session?.user?.email === data.email && (
+            <Tab label="Saved Posts" value="saved" />
+          )}
+        </Tabs>
       </div>
+
+      <Userposts posts={posts} />
     </div>
   );
 }
