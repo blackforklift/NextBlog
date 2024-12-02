@@ -4,6 +4,7 @@ import Menu from '@mui/material/Menu';
 import AuthLinks from '../authLinks/AuthLinks';
 import styles from "./dropDown.module.css"
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 
 
@@ -25,14 +26,16 @@ export default function Dropdown() {
 
   return (
     <div>
+     { session === null && (<Link href="/login">Login</Link>)}
       <Button className={styles.links} 
         id="demo-positioned-button"
         aria-controls={open ? 'demo-positioned-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
+        
         onClick={handleClick}
       >
-       { session !== null ? <img className={styles.avatar} src={session&&session.user.image}></img>:"Login"} 
+       {session !==null && <img className={styles.avatar} src={session&&session.user.image}></img>}
 
       </Button>
 
