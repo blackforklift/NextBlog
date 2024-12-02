@@ -1,9 +1,10 @@
 "use client";
 import dynamic from "next/dynamic";
-import "react-quill/dist/quill.bubble.css"; // Import Quill styles
+import "react-quill/dist/quill.bubble.css"; 
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"; 
 import styles from "./writePage.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   getStorage,
   ref,
@@ -22,13 +23,23 @@ const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 Quill.register("modules/imageResize", ImageResize);
 
 function WritePage() {
+  const { data: session,status} = useSession(); 
+  const router = useRouter();
+
   const [content, setContent] = useState("");
   const [catSlug, setCatSlug] = useState("");
   const [file, setFile] = useState(null);
   const [media, setMedia] = useState([]);
-  const router = useRouter();
-
   const [title, setTitle] = useState("");
+
+  useEffect(() => {
+    if (status === "loading") return;
+    console.log("session:",session,status)
+    if (!session || (session.user.role !== "author" && session.user.role !== "admin")) {
+
+      router.push("/error");
+    }
+  }, [session, status, router]);
 
   const quillModules = {
     toolbar: [
@@ -136,7 +147,7 @@ function WritePage() {
     );
 
     setContent(updatedContent);
-    console.log("Updated Content:", updatedContent);
+   
 
     const res = await fetch("/api/posts", {
       method: "POST",
@@ -215,7 +226,7 @@ function WritePage() {
     );
 
     setContent(updatedContent);
-    console.log("Updated Content:", updatedContent);
+
 
     const res = await fetch("/api/posts", {
       method: "POST",

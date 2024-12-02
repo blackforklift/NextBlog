@@ -40,7 +40,7 @@
     transform: translateY(0); /* Aktifken geri dönme efekti */
   }
   .socialButton:first-child {
-    background-color: #8e55ff;
+    background-color: #a65acc;
   }
   
   .socialButton:nth-child(2) {

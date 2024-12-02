@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react"; 
 import "react-quill/dist/quill.bubble.css"; // Import Quill styles
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import { app } from "../../../utils/firebase";
@@ -14,17 +15,23 @@ const storage = getStorage(app);
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 Quill.register('modules/imageResize', ImageResize);
 
-
 function WritePage({ params }) {
+  const { data: session, status } = useSession(); 
+  const router = useRouter();
   const [content, setContent] = useState("");
   const [catSlug, setCatSlug] = useState("");
   const [media, setMedia] = useState([]);
   const [title, setTitle] = useState("");
-  const router = useRouter();
   const { slug } = params || {};
   const [isEditMode, setIsEditMode] = useState(false);
   const processedUrls = new Set();
-  console.log(slug)
+
+  useEffect(() => {
+    // Redirect unauthenticated users
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
 
   useEffect(() => {
     if (slug) {
@@ -50,13 +57,12 @@ function WritePage({ params }) {
     toolbar: [
       [{ header: [1, 2, 3, 4, false] }],
       [{ size: ['small', false, 'large', 'huge'] }],
-      ["bold","italic", "underline", "strike", "blockquote","code-block"],
-      [{ 'font': [] }, { 'size': [] }]
+      ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
+      [{ 'font': [] }, { 'size': [] }],
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
       [{ align: [] }],
       [{ color: [] }],
-    
       ["clean"],
     ],
     clipboard: {
@@ -107,16 +113,14 @@ function WritePage({ params }) {
       var htmlDoc = parser.parseFromString(content, 'text/html');
       const imgs = htmlDoc.querySelectorAll('img');
       
-//add id to headings
+      // Add id to headings
       const headings = htmlDoc.querySelectorAll('h1, h2, h3');      
-
       headings.forEach(heading => {
         const text = heading.textContent || heading.innerText;
         const id = text.toLowerCase();
         heading.id = id;
       });
-  
-      
+
       await Promise.all(Array.from(imgs).map(async (img) => {
         let url = img.getAttribute('src');
 
@@ -138,8 +142,8 @@ function WritePage({ params }) {
       const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
       setContent(updatedContent);
 
-      const method="PATCH";
-      const endpoint = `/api/posts/${slug}`;
+      const method = isEditMode ? "PATCH" : "POST";
+      const endpoint = isEditMode ? `/api/posts/${slug}` : `/api/posts`;
 
       const res = await fetch(endpoint, {
         method: method,
@@ -163,6 +167,10 @@ function WritePage({ params }) {
       console.error("Error in handleSubmit:", error);
     }
   };
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.container}>
