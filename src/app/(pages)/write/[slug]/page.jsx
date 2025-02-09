@@ -2,32 +2,32 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { useSession } from "next-auth/react"; 
-import "react-quill/dist/quill.bubble.css"; // Import Quill styles
+import { useSession } from "next-auth/react";
+import "react-quill/dist/quill.bubble.css"; 
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import { app } from "../../../utils/firebase";
 import Cover from "../../../components/cover/Cover";
 import styles from "../writePage.module.css";
-import { Quill } from "react-quill";
-import ImageResize from "quill-image-resize-module-react";
 
 const storage = getStorage(app);
+
+// Dynamically import Quill Editor
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
-Quill.register('modules/imageResize', ImageResize);
 
 function WritePage({ params }) {
-  const { data: session, status } = useSession(); 
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const { slug } = params || {};
+
   const [content, setContent] = useState("");
   const [catSlug, setCatSlug] = useState("");
   const [media, setMedia] = useState([]);
   const [title, setTitle] = useState("");
-  const { slug } = params || {};
   const [isEditMode, setIsEditMode] = useState(false);
+  const [quillModules, setQuillModules] = useState(null);
   const processedUrls = new Set();
 
   useEffect(() => {
-    // Redirect unauthenticated users
     if (status === "unauthenticated") {
       router.push("/auth/login");
     }
@@ -40,6 +40,39 @@ function WritePage({ params }) {
     }
   }, [slug]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      import("react-quill").then((ReactQuillModule) => {
+        const Quill = ReactQuillModule.Quill || ReactQuillModule.default.Quill;
+        import("quill-image-resize-module-react").then((ImageResizeModule) => {
+          const ImageResize = ImageResizeModule.default;
+
+          if (Quill) {
+            Quill.register("modules/imageResize", ImageResize);
+          }
+
+          setQuillModules({
+            toolbar: [
+              [{ header: [1, 2, 3, 4, false] }],
+              [{ size: ["small", false, "large", "huge"] }],
+              ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
+              [{ font: [] }, { size: [] }],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["link", "image"],
+              [{ align: [] }],
+              [{ color: [] }],
+              ["clean"],
+            ],
+            clipboard: { matchVisual: false },
+            imageResize: {
+              modules: ["Resize", "DisplaySize"],
+            },
+          });
+        });
+      });
+    }
+  }, []);
+
   const fetchPostData = async (slug) => {
     const res = await fetch(`/api/posts/${slug}`);
     if (res.ok) {
@@ -50,27 +83,6 @@ function WritePage({ params }) {
       setMedia(data.img);
     } else {
       console.error("Error fetching post data:", await res.text());
-    }
-  };
-
-  const quillModules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, false] }],
-      [{ size: ['small', false, 'large', 'huge'] }],
-      ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
-      [{ 'font': [] }, { 'size': [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-      [{ align: [] }],
-      [{ color: [] }],
-      ["clean"],
-    ],
-    clipboard: {
-      matchVisual: false
-    },
-    imageResize: {
-      parchment: Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize']
     }
   };
 
@@ -103,41 +115,37 @@ function WritePage({ params }) {
     setContent(newContent);
   };
 
-  const handleImageUrlChange = (url) => {
-    setMedia(url);
-  };
-
   const handleSubmit = async () => {
     try {
-      var parser = new DOMParser();
-      var htmlDoc = parser.parseFromString(content, 'text/html');
-      const imgs = htmlDoc.querySelectorAll('img');
-      
-      // Add id to headings
-      const headings = htmlDoc.querySelectorAll('h1, h2, h3');      
-      headings.forEach(heading => {
+      const parser = new DOMParser();
+      const htmlDoc = parser.parseFromString(content, "text/html");
+      const imgs = htmlDoc.querySelectorAll("img");
+
+      const headings = htmlDoc.querySelectorAll("h1, h2, h3");
+      headings.forEach((heading) => {
         const text = heading.textContent || heading.innerText;
-        const id = text.toLowerCase();
-        heading.id = id;
+        heading.id = text.toLowerCase();
       });
 
-      await Promise.all(Array.from(imgs).map(async (img) => {
-        let url = img.getAttribute('src');
+      await Promise.all(
+        Array.from(imgs).map(async (img) => {
+          let url = img.getAttribute("src");
 
-        if (!url.startsWith("https://firebase") && !processedUrls.has(url)) {
-          processedUrls.add(url);
+          if (!url.startsWith("https://firebase") && !processedUrls.has(url)) {
+            processedUrls.add(url);
 
-          const name = new Date().getTime() + 1;
-          const storageRef = ref(storage, name.toString());
+            const name = new Date().getTime() + 1;
+            const storageRef = ref(storage, name.toString());
 
-          await uploadString(storageRef, url, 'data_url').then(async (snapshot) => {
-            const downloadUrl = await getDownloadURL(storageRef);
-            img.setAttribute('src', downloadUrl);
-          }).catch(error => {
-            console.error('Error uploading:', error);
-          });
-        }
-      }));
+            await uploadString(storageRef, url, "data_url").then(async () => {
+              const downloadUrl = await getDownloadURL(storageRef);
+              img.setAttribute("src", downloadUrl);
+            }).catch((error) => {
+              console.error("Error uploading:", error);
+            });
+          }
+        })
+      );
 
       const updatedContent = new XMLSerializer().serializeToString(htmlDoc.documentElement);
       setContent(updatedContent);
@@ -146,9 +154,9 @@ function WritePage({ params }) {
       const endpoint = isEditMode ? `/api/posts/${slug}` : `/api/posts`;
 
       const res = await fetch(endpoint, {
-        method: method,
+        method,
         body: JSON.stringify({
-          title: title,
+          title,
           img: media,
           desc: updatedContent,
           slug: slugify(title),
@@ -160,8 +168,7 @@ function WritePage({ params }) {
         const data = await res.json();
         router.push(`/posts/${data.slug}`);
       } else {
-        const errorText = await res.text();
-        console.error("Error submitting post:", errorText);
+        console.error("Error submitting post:", await res.text());
       }
     } catch (error) {
       console.error("Error in handleSubmit:", error);
@@ -174,7 +181,7 @@ function WritePage({ params }) {
 
   return (
     <div className={styles.container}>
-      <Cover onImageUrlChange={handleImageUrlChange} />
+      <Cover />
       <input
         type="text"
         placeholder="Title"
@@ -190,15 +197,19 @@ function WritePage({ params }) {
         placeholder="Enter category"
       />
       <div className={styles.editor}>
-        <QuillEditor
-          className={styles.textArea}
-          value={content}
-          onChange={handleEditorChange}
-          modules={quillModules}
-          formats={quillFormats}
-          placeholder="Tell me...."
-          theme="bubble"
-        />
+        {quillModules ? (
+          <QuillEditor
+            className={styles.textArea}
+            value={content}
+            onChange={handleEditorChange}
+            modules={quillModules}
+            formats={quillFormats}
+            placeholder="Tell me...."
+            theme="bubble"
+          />
+        ) : (
+          <p>Loading editor...</p>
+        )}
       </div>
       <button className={styles.publish} onClick={handleSubmit}>
         {isEditMode ? "Update" : "Publish"}

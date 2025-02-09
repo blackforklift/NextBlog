@@ -1,27 +1,28 @@
 "use client"
 import styles from "./navbar.module.css";
-import Image from "next/image";
 import Link from "next/link";
-import AuthLinks from "../authLinks/AuthLinks";
+
 import ThemeToggle from "../themeToggle/ThemeToggle";
 import { ThemeContext } from "../../context/ThemeContext"
 import React, { useContext } from "react";
 import Dropdown from "../dropdown/Dropdown"
+import Image from "next/image";
 
 
 const Navbar = () => {
 
-  const { theme, toggle } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   return (
     <div className={styles.container}>
     
    <Link href="/">
-   <img
-        className={styles.logo2}
-        src={theme === "light" ? "/logoforlight.png" : "/logofordark.png"}
-    
-        alt="DilanTech Logo"
-      /> 
+   <Image
+          className={styles.logo2}
+          src={theme === "light" ? "/logoforlight.png" : "/logofordark.png"}
+          alt="DilanTech Logo"
+          width={259} 
+          height={96} 
+        />
       </Link> 
       {/* <div className={styles.logo}>Dilantech</div> */}
       <div className={styles.links}>

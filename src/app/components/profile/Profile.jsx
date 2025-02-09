@@ -1,68 +1,44 @@
 import React, { useState, useEffect } from "react";
 import styles from "./profile.module.css";
 import Avatar from "../avatar/Avatar";
-import { Button, Tabs, Tab } from "@mui/material";
+import { Button, Tabs, Tab, IconButton } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Userposts from "../userposts/Userposts";
 
-const getData = async (slug) => {
-  const res = await fetch(`/api/profile/${slug}`, {
-    cache: "no-store",
-  });
+import SettingsIcon from "@mui/icons-material/Settings";
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch profile data");
+const fetchPosts = async (tab, slug) => {
+  const endpoints = {
+    published: `/api/userposts/${slug}`,
+    saved: `/api/userbookmarks/${slug}`,
+    drafts: `/api/userdrafts/${slug}`,
+  };
+
+  try {
+    const res = await fetch(endpoints[tab], { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to fetch ${tab} posts`);
+    return await res.json();
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  return res.json();
 };
 
-const getPublishedPosts = async (slug) => {
-  const res = await fetch(`/api/userposts/${slug}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch published posts");
+const fetchProfileData = async (slug) => {
+  try {
+    const res = await fetch(`/api/profile/${slug}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch profile data");
+    return await res.json();
+  } catch (error) {
+    throw new Error(error.message);
   }
-
-  return res.json();
-};
-
-const getSavedPosts = async (slug) => {
-  const res = await fetch(`/api/savedposts/${slug}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch saved posts");
-  }
-
-  return res.json();
-};
-
-const getDrafts = async (slug) => {
-  const res = await fetch(`/api/userdrafts/${slug}`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch drafts");
-  }
-
-  return res.json();
-};
-
-const capitalizeName = (name) => {
-  return name.replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 export default function Profile({ slug }) {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [data, setData] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("published");
@@ -70,98 +46,88 @@ export default function Profile({ slug }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const profileData = await getData(slug);
-        setData(profileData);
+        const profileData = await fetchProfileData(slug);
+        setProfile(profileData);
 
-        // Fetch the initial posts based on the active tab
-        const fetchedPosts = await getPublishedPosts(slug);
-        setPosts(fetchedPosts);
+        const initialPosts = await fetchPosts("published", slug);
+        setPosts(initialPosts);
       } catch (error) {
         setError(error.message);
       }
     };
-
     fetchData();
   }, [slug]);
 
   useEffect(() => {
-    const fetchTabData = async () => {
+    const updatePosts = async () => {
       try {
-        let fetchedPosts;
-        if (activeTab === "published") {
-          fetchedPosts = await getPublishedPosts(slug);
-        } else if (activeTab === "saved") {
-          
-          fetchedPosts = await getSavedPosts(slug);
-        } else if (activeTab === "drafts") {
-          fetchedPosts = await getDrafts(slug);
-        }
-        setPosts(fetchedPosts);
+        setPosts(await fetchPosts(activeTab, slug));
       } catch (error) {
         setError(error.message);
       }
     };
+    updatePosts();
+  }, [activeTab, slug]);
 
-    fetchTabData();
-  }, [activeTab, slug]); // Fetch data whenever the active tab or slug changes
+  if (error) return <div className={styles.error}>Error: {error}</div>;
+  if (!profile) return <div className={styles.loading}>Loading...</div>;
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!data) {
-    return <div>Loading ... </div>;
-  }
-
-  const name = capitalizeName(data.name);
-  let srcimage =data.image
-
-
-  const handleBackClick = () => {
-    router.back();
-  };
+  const handleBackClick = () => router.back();
+  const handleEditProfile = () => router.push(`/editProfile/${slug}`);
 
   return (
     <div>
       <div className={styles.container}>
-        <Button
-          variant="text"
-          onClick={handleBackClick}
-          className={styles.backButton}
-        >
-          Back
-        </Button>
+        <div className={styles.topButtons}>
+          <Button
+            variant="text"
+            onClick={handleBackClick}
+            className={styles.backButton}
+          >
+            Back
+          </Button>
+          {session?.user?.email === profile.email && (
+            <IconButton
+              onClick={handleEditProfile}
+              className={styles.settingsButton}
+            >
+              <SettingsIcon />
+            </IconButton>
+          )}
+        </div>
 
         <Avatar
           avatarStyle={styles.cavatar}
-          src={srcimage}
-          alt={name}
+          src={profile.image}
+          alt={profile.name}
           size="150px"
         />
-
-        <div>
-          <h3 className={styles.text}>{name}</h3>
-        </div>
-        <div className={styles.transparent}>
-          <p>{data.desc}</p>
-        </div>
+ {console.log(profile)}
+        <h3 className={styles.text}>{profile.name}</h3>
+        <p className={styles.transparent}>{profile.desc}</p>
+       
       </div>
+
       <div className={styles.tab}>
         <Tabs
           value={activeTab}
           onChange={(event, newValue) => setActiveTab(newValue)}
         >
           <Tab label="Published Posts" value="published" />
-          {session?.user?.email === data.email && (
+          {session?.user?.email === profile.email && (
             <Tab label="Drafts" value="drafts" />
           )}
-          {session?.user?.email === data.email && (
+          {session?.user?.email === profile.email && (
             <Tab label="Saved Posts" value="saved" />
           )}
         </Tabs>
       </div>
 
-      <Userposts posts={posts} />
+      {posts.length > 0 ? (
+        <Userposts posts={posts} />
+      ) : (
+        <p className={styles.noPostsMessage}>No posts found in this section.</p>
+      )}
     </div>
   );
 }

@@ -58,6 +58,10 @@
     object-fit: cover;
   }
   
+  .bookmark{
+    width: 5em;
+height: 3em;
+  }
 
   .imageContainer {
 

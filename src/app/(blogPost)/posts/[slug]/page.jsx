@@ -8,7 +8,8 @@ import Delete from "../../../components/delete/Delete";
 import { useSession } from "next-auth/react";
 import Comments from "../../../components/comments/Comments";
 import { PostDataContext } from "../../../context/PostDataContext";
-import Toc from "../../../components/toc/Toc";
+import Bookmark from "../../../components/bookmark/Bookmark";
+
 
 const getData = async (slug) => {
   const res = await fetch(`http://localhost:3000/api/posts/${slug}?`, {
@@ -26,7 +27,6 @@ const SinglePage = ({ params }) => {
   const { slug } = params;
   const { data: session, status } = useSession();
   const { postData, setPostData } = useContext(PostDataContext);
-  const [headings, setHeadings] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,14 +42,21 @@ const SinglePage = ({ params }) => {
   }, [slug, setPostData]);
 
   if (!postData) {
-    return <p>Loading...</p>; // or loading state
+    return <p>Loading...</p>;
   }
 
   return (
     <div className={styles.container}>
       <div className={styles.infoContainer}>
         <div className={styles.textContainer}>
-          <h1 className={styles.title}>{postData?.title}</h1>
+        <div className={styles.bookmark}><Bookmark slug={slug} postId={postData.id} /></div>
+          <div className={styles.header}>
+            <h1 className={styles.title}>{postData?.title}</h1>
+
+          
+           
+          </div>
+        
           <div className={styles.user}>
             {postData?.user?.image && (
               <div className={styles.userImageContainer}>
@@ -66,17 +73,17 @@ const SinglePage = ({ params }) => {
               {postData.createdAt.substring(0, 10)}
             </span>
           </div>
-      
-            {" "}
-            {status === "authenticated" &&
-              session.user.email === postData.userEmail && (
-                <div className={styles.crud}>
-                  <Delete key={postData._id} item={postData} />{" "}
-                  <div>  <Button color="secondary" variant="outlined"   href={`/write/${postData.slug}`} >edit</Button> </div>
-                </div>
-                
-              )}          
-           
+
+          {status === "authenticated" && session.user.email === postData.userEmail && (
+            <div className={styles.crud}>
+              <Delete key={postData._id} item={postData} />{" "}
+              <div>
+                <Button color="secondary" variant="outlined" href={`/write/${postData.slug}`}>
+                  Edit
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

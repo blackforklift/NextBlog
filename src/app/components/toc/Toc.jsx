@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Toc.module.css'; 
+import styles from './toc.module.css'; 
 import { useHeadsObserver } from '../../utils/hooks';
 
 const Toc = ({ data }) => {

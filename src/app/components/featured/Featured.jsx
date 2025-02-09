@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import styles from "./featured.module.css"
 import { purple } from '@mui/material/colors';
 
-export default function featured() {
+export default function Featured() {
   const [latestPost, setLatestPost] = React.useState(null);
 
   React.useEffect(() => {

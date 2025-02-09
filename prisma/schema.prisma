@@ -44,12 +44,14 @@ model User {
   emailVerified DateTime?
   image         String?
   desc          String?
-  role  String @default("user")
+  role          String    @default("user")
   accounts      Account[]
   sessions      Session[]
   Post          Post[]
   Comment       Comment[]
+ bookmarks     Bookmark[]
 }
+
 
 model VerificationToken {
   identifier String   @id @map("_id")
@@ -57,6 +59,18 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid()) @map("_id")
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId]) // same person cannot save twice
 }
 
 model Category {
@@ -85,7 +99,7 @@ model Post {
   user      User      @relation(fields: [userEmail], references: [email],onDelete: Cascade) //delete all posts if author is deleted
   comments  Comment[]
   catViews  Int       @map("_catViews") @default(0)
-
+  bookmarks Bookmark[]
 
 }
 
@@ -98,5 +112,4 @@ model Comment {
   postSlug  String
   post      Post     @relation(fields: [postSlug], references: [slug],onDelete: Cascade)//delete all comments if post is deleted
 
-  // Optionally, add onDelete: Cascade for other related entities
 }

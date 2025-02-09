@@ -6,7 +6,7 @@ import styles from "./dropDown.module.css"
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-
+import Image from "next/image";
 
 export default function Dropdown() {
 
@@ -35,7 +35,7 @@ export default function Dropdown() {
         
         onClick={handleClick}
       >
-       {session !==null && <img className={styles.avatar} src={session&&session.user.image}></img>}
+       {session !==null && <Image className={styles.avatar} src={session&&session.user.image} width={85} height={85}   alt="avatar"></Image>}
 
       </Button>
 

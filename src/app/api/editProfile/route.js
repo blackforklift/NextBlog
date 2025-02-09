@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../utils/connect";
-import { getAuthSession } from "../../../utils/auth"
+import prisma from "../../utils/connect";
+import { getAuthSession } from "../../utils/auth";
 
-// Get user data
 export const GET = async (req, { params }) => {
   const { slug } = params;
 
-  // Sanitizie slug to prevent attacks
-  const sanitizedSlug = slug.replace(/[^a-zA-Z0-9@.]/g, "");
+
+  const sanitizedSlug = slug.replace(/[^a-zA-Z0-9@._-]/g, "");
 
   try {
     const profile = await prisma.user.findUnique({
@@ -28,7 +27,6 @@ export const GET = async (req, { params }) => {
     }
 
     return new NextResponse(JSON.stringify(profile), { status: 200 });
-
   } catch (err) {
     console.error("Error fetching user data:", err);
     return new NextResponse(
@@ -37,23 +35,26 @@ export const GET = async (req, { params }) => {
     );
   }
 };
-// update user data
+
+
 export const PUT = async (req, { params }) => {
   const { slug } = params;
-
   const session = await getAuthSession();
 
-  if (session.user.email !== slug) {
+
+  if (!session || session.user.email !== slug) {
     return new NextResponse(
-      JSON.stringify({ message: "Not Authenticated!" }, { status: 401 })
+      JSON.stringify({ message: "Not Authenticated!" }),
+      { status: 401 }
     );
   }
+
   try {
-    const { name, image,desc } = await req.json();
+    const { name, image, desc } = await req.json();
 
     const updatedUser = await prisma.user.update({
       where: { email: slug },
-      data: { name, image,desc},
+      data: { name, image, desc },
     });
 
     return new NextResponse(JSON.stringify(updatedUser), { status: 200 });
