@@ -50,8 +50,8 @@ const Bookmark = ({ slug, postId }) => {
   };
 
   return (
-    <IconButton onClick={toggleBookmark} color="primary" disabled={loading}>
-      {bookmarked ? <BookmarkIcon sx={{ fontSize: 60 }} /> : <BookmarkBorderIcon sx={{ fontSize: 60 }} />}
+    <IconButton  sx={{ position: "inherit" }} onClick={toggleBookmark} color="primary" disabled={loading}>
+      {bookmarked ? <BookmarkIcon sx={{ fontSize: 60 ,position: "inherit"}} /> : <BookmarkBorderIcon sx={{ fontSize: 60 }} />}
     </IconButton>
   );
 };
