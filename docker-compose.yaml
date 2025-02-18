@@ -1,0 +1,9 @@
+services:
+  nextjs:
+    build: .
+    container_name: my-nextjs-blog
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    command: "npm run dev"
