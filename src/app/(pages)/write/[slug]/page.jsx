@@ -181,7 +181,7 @@ function WritePage({ params }) {
 
   return (
     <div className={styles.container}>
-      <Cover />
+      <Cover onImageUrlChange={setMedia}/>
       <input
         type="text"
         placeholder="Title"
