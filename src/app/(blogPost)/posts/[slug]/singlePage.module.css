@@ -92,10 +92,10 @@ height: 3em;
     gap: 50px;
   }
 
-  .content p {
+  /* .content p {
  font-size: 26px;
   }
-  
+   */
   
   .post {
     flex: 5;
