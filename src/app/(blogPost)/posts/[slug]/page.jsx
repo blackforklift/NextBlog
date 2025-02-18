@@ -12,7 +12,7 @@ import Bookmark from "../../../components/bookmark/Bookmark";
 
 
 const getData = async (slug) => {
-  const res = await fetch(`http://localhost:3000/api/posts/${slug}?`, {
+  const res = await fetch(`https://dilantech.blog/api/posts/${slug}?`, {
     cache: "no-store",
   });
 
