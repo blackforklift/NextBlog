@@ -120,16 +120,16 @@ height: 3em;
     .username{
     white-space: nowrap; /** do not slice my sentence **/
     }
-
+    .post img {
+      max-width: 320px !important;
+    }
     .crud{
       display: none;
     }
     .title {
       font-size: 30px;
     }
-    .post img {
-      max-width: 320px !important;
-    }
+ 
 .date{
   display: none;
 }
