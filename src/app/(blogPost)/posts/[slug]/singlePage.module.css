@@ -127,8 +127,8 @@ height: 3em;
     .title {
       font-size: 30px;
     }
-    .responsiveImage {
-      max-width: 320px;
+    .post img {
+      max-width: 320px !important;
     }
 .date{
   display: none;
